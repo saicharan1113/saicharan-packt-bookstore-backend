@@ -24,10 +24,11 @@ return new class extends Migration
             $table->foreignIdFor(User::class, 'authorId')->constrained('users')->onDelete('restrict')->onUpdate('restrict');
             $table->longText('description');
             $table->string('isbn', 13);
-            $table->string("image");
+            $table->string("image")->nullable();
             $table->foreignIdFor(Publisher::class, 'publisherId')->constrained('publishers')->onDelete('restrict')->onUpdate('restrict');
             $table->timestamp('createdAt')->nullable();
             $table->timestamp('updatedAt')->nullable();
+            $table->softDeletes('deletedAt');
         });
     }
 

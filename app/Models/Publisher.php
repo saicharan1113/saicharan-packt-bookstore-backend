@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\Model as BaseModel;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Publisher extends BaseModel
 {
@@ -19,9 +20,17 @@ class Publisher extends BaseModel
     ];
 
     /**
-     * @return int
+     * @return HasMany
      */
-    public function getRouteKey(): int
+    public function books(): HasMany
+    {
+        return $this->hasMany(Book::class, 'publisherId');
+    }
+
+    /**
+     * @return string
+     */
+    public function getRouteKeyName(): string
     {
         return 'uniquePublisherId';
     }

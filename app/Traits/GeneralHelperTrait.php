@@ -6,7 +6,7 @@ trait GeneralHelperTrait
 {
     /**
      * @return int
-     * @throws \Exception]
+     * @throws \Exception
      */
     public function generateUniqueId(): int
     {

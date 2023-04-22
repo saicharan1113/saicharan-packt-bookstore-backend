@@ -4,15 +4,55 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\Model as BaseModel;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Book extends BaseModel
 {
     use HasFactory;
+    use SoftDeletes;
 
     /**
-     * @return int
+     * @var string[]
      */
-    public function getRouteKey(): int
+    protected $hidden = ['id', 'genreId', 'publisherId', 'authorId', 'deletedAt', 'updatedAt'];
+
+    /**
+     * @var string[]
+     */
+    protected $casts = [
+        'createdAt' => 'datetime:Y-m-d h:i:s'
+    ];
+
+
+    /**
+     * @return BelongsTo
+     */
+    public function genre(): BelongsTo
+    {
+        return $this->belongsTo(Genre::class, 'genreId');
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function publisher(): BelongsTo
+    {
+        return $this->belongsTo(Publisher::class, 'publisherId');
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function author(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'authorId');
+    }
+
+    /**
+     * @return string
+     */
+   final public function getRouteKeyName(): string
     {
         return 'uniqueBookId';
     }

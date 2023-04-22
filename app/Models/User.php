@@ -16,10 +16,19 @@ class User extends BaseModel implements
     AuthenticatableContract,
     AuthorizableContract
 {
-    use HasApiTokens, HasFactory, Notifiable, Authenticatable, Authorizable ;
+    use HasApiTokens, HasFactory, Notifiable, Authenticatable, Authorizable;
 
     const ROLES = [
-        'ADMIN', 'CUSTOMER', 'AUTHOR'
+        'admin' => 'ADMIN',
+        'customer' => 'CUSTOMER',
+        'author' => 'AUTHOR'
+    ];
+
+    /**
+     * @var string[]
+     */
+    protected $casts = [
+        'createdAt' => 'datetime:Y-m-d H:i:s'
     ];
 
     /**
@@ -28,6 +37,14 @@ class User extends BaseModel implements
      * @var array<int, string>
      */
     protected $hidden = [
-        'password',
+        'password', 'id', 'updatedAt'
     ];
+
+    /**
+     * @return string
+     */
+    public function getRouteKeyName(): string
+    {
+        return 'uniqueUserId';
+    }
 }

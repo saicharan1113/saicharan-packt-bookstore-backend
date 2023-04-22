@@ -13,6 +13,8 @@ class Model extends BaseModel
 
     const UPDATED_AT = 'updatedAt';
 
+    const DELETED_AT = 'deletedAt';
+
     /**
      * @var string[]
      */
@@ -20,12 +22,5 @@ class Model extends BaseModel
 
     public static $snakeAttributes = false;
 
-    /**
-     * @return int
-     */
-    public function getRouteKey(): int
-    {
-        return 'uniqueUserId';
-    }
 
 }

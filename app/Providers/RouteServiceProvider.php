@@ -19,6 +19,8 @@ class RouteServiceProvider extends ServiceProvider
      */
     public const HOME = '/home';
 
+//    protected $namespace = 'App\\Http\\Controllers\\API\\V1';
+
     /**
      * Define your route model bindings, pattern filters, and other route configuration.
      *
@@ -38,8 +40,8 @@ class RouteServiceProvider extends ServiceProvider
                 ->namespace($this->namespace.'\V1')
                 ->group(base_path('routes/api_v1.php'));
 
-//            Route::middleware('web')
-//                ->group(base_path('routes/web.php'));
+            Route::middleware('web')
+                ->group(base_path('routes/web.php'));
         });
     }
 
