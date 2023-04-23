@@ -75,4 +75,14 @@ class UserController extends Controller
         return new JsonResponse(['response' => $result], Response::HTTP_OK);
 
     }
+
+    /**
+     * @return JsonResponse
+     */
+    public function logout(): JsonResponse
+    {
+        Auth::user()->tokens()->delete();
+
+        return new JsonResponse(['response' => 'User Successfully Logged out'], Response::HTTP_OK);
+    }
 }
