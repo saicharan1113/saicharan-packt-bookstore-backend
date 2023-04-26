@@ -76,7 +76,7 @@ class Handler extends ExceptionHandler
 
             return new JsonResponse(['response' => 'Model Not Found!'], Response::HTTP_NOT_FOUND);
         } elseif ($e instanceof AuthenticationException) {
-            return new JsonResponse(['response' => $e->getMessage()], Response::HTTP_UNAUTHORIZED);
+            return new JsonResponse(['response' => "Unauthenticated"], Response::HTTP_UNAUTHORIZED);
         }
 
         return parent::render($request, $e);

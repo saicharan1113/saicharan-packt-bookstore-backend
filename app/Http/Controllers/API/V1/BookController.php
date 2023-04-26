@@ -7,7 +7,6 @@ use App\Http\Requests\BookRequest;
 use App\Http\Resources\BookResource;
 use App\Models\Book;
 use App\Services\BookService;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -44,36 +43,45 @@ class BookController extends Controller
 
     /**
      * @param Book $book
+     * @param BookService $bookService
      * @return JsonResponse
+     * @throws \Elastic\Elasticsearch\Exception\ClientResponseException
+     * @throws \Elastic\Elasticsearch\Exception\MissingParameterException
+     * @throws \Elastic\Elasticsearch\Exception\ServerResponseException
      */
-    public function delete(Book $book): JsonResponse
+    public function delete(Book $book, BookService $bookService): JsonResponse
     {
+        $data = [
+            'id' => $book->uniqueBookId,
+            'index' => $book->getTable()
+        ];
+
         $book->delete();
+
+        $bookService->deleteRecord($data);
 
         return new JsonResponse(['response' => 'Deleted the Book'], Response::HTTP_OK);
     }
 
     /**
      * @param Book $book
+     * @param BookService $bookService
      * @return JsonResponse
+     * @throws \Elastic\Elasticsearch\Exception\ClientResponseException
+     * @throws \Elastic\Elasticsearch\Exception\MissingParameterException
+     * @throws \Elastic\Elasticsearch\Exception\ServerResponseException
      */
-    public function get(Book $book): JsonResponse
+    public function get(Book $book, BookService $bookService)
     {
-        $bookData = $book->load(
-            [
-                'genre',
-                'publisher:id,name,uniquePublisherId,createdAt',
-                'author:id,name,uniqueUserId'
-            ]
-        );
+        $bookData = $bookService->getRecord($book);
 
-        return new JsonResponse(['response' => new BookResource($bookData)], Response::HTTP_OK);
+        return new JsonResponse(['response' => $bookData], Response::HTTP_OK);
     }
 
     /**
-     * @return JsonResponse
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function getBookList()
+    public function getBookList(BookService $bookService)
     {
         return BookResource::collection(Book::paginate());
     }

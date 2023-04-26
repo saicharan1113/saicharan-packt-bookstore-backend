@@ -43,7 +43,11 @@ class BookRequest extends FormRequest
         ];
 
         if ($this->method() == 'PUT') {
-            $rules['bookIdentifier'] = ['required', 'integer', 'exists:App\Models\Book,uniqueBookId'];
+            $rules['bookIdentifier'] = ['required', 'integer',
+                Rule::exists('books', 'uniqueBookId')->where(function ($query) {
+                    return $query->where('deletedAt', null);
+                })
+            ];
         }
 
         return $rules;
