@@ -10,6 +10,7 @@ use App\Services\BookService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Storage;
 
 class BookController extends Controller
 {
@@ -86,13 +87,22 @@ class BookController extends Controller
         return BookResource::collection(Book::paginate());
     }
 
-
-    public function uploadBookImage(Request $request)
+    /**
+     * @param Request $request
+     * @param BookService $bookService
+     * @return JsonResponse
+     * @throws \ErrorException
+     */
+    public function upload(Request $request, BookService $bookService): JsonResponse
     {
         $validatedData = $request->validate(
             [
-                'image' => ['required', 'mimes:jpg,jpeg,png']
+                'image' => ['required', 'mimes:jpg,jpeg,png,gif', 'max:2048']
             ]
         );
+
+        $mediaData = $bookService->uploadMedia($validatedData);
+
+        return new JsonResponse(['response' => $mediaData], Response::HTTP_CREATED);
     }
 }

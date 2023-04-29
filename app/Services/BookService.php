@@ -4,9 +4,11 @@ namespace App\Services;
 
 use App\Models\Book;
 use App\Models\Genre;
+use App\Models\Media;
 use App\Models\Publisher;
 use App\Models\User;
 use App\Traits\GeneralHelperTrait;
+use Illuminate\Support\Facades\Storage;
 
 class BookService extends ElasticsearchService
 {
@@ -61,20 +63,20 @@ class BookService extends ElasticsearchService
                 'uniqueBookId' => $data['bookIdentifier'] ?? $data['uniqueBookId']
             ];
 
-                if (array_key_exists('bookIdentifier', $data)) {
-                    $params = [
-                        'id' =>$data['bookIdentifier'],
-                        'index' => $book->getTable(),
-                        'body' => [
-                            'doc' => $params['body']
-                        ]
-                    ];
+            if (array_key_exists('bookIdentifier', $data)) {
+                $params = [
+                    'id' => $data['bookIdentifier'],
+                    'index' => $book->getTable(),
+                    'body' => [
+                        'doc' => $params['body']
+                    ]
+                ];
 
-                    $result['data'] = $this->edit($params);
-                } else {
-                    $params['id'] = $data['uniqueBookId'];
-                    $result['data'] = $this->store($params);
-                }
+                $result['data'] = $this->edit($params);
+            } else {
+                $params['id'] = $data['uniqueBookId'];
+                $result['data'] = $this->store($params);
+            }
 
 //            $result['data'] = $book->refresh();
 
@@ -113,16 +115,52 @@ class BookService extends ElasticsearchService
      */
     public function deleteRecord(array $params): array
     {
-       return $this->deleteDocument($params);
+        return $this->deleteDocument($params);
     }
 
     public function getList()
     {
 
         $params = [
-            ['index' =>'books', 'id' => '*'],
+            ['index' => 'books', 'id' => '*'],
         ];
 
         return $this->client->search($params)->hits->hits;
+    }
+
+    /**
+     * @param array $data
+     * @return array
+     * @throws \ErrorException
+     */
+    public function uploadMedia(array $data): array
+    {
+        $mediaName = $data['image']->getClientOriginalName();
+        $uniqueMediaId = $this->generateUniqueId();
+        $mediaType = 'IMAGE';
+
+        try {
+            $mediaPath = Storage::put($mediaType, $data['image']);
+            $temporaryUrl = Storage::temporaryUrl($mediaPath, now()->addMinute(6));
+            $media = new Media();
+            $media->uniqueMediaId = $uniqueMediaId;
+            $media->path = $mediaPath;
+            $media->name = $mediaName;
+            $media->type = $mediaType;
+            $media->save();
+
+            return [
+                'message' => 'Media Uploaded',
+                'media' => [
+                    'uniqueMediaId' => $uniqueMediaId,
+                    'name' => $mediaName,
+                    'url' => $temporaryUrl
+                ]
+            ];
+
+        } catch (\Exception $exception) {
+//            throw $exception;
+            throw new \ErrorException("Unable to Upload media");
+        }
     }
 }

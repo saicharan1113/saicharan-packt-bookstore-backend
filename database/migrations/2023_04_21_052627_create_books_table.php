@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Genre;
+use App\Models\Media;
 use App\Models\Publisher;
 use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
@@ -25,6 +26,7 @@ return new class extends Migration
             $table->longText('description');
             $table->string('isbn', 13);
             $table->string("image")->nullable();
+            $table->foreignIdFor(Media::class, 'mediaId')->nullable()->constrained('media')->onDelete('restrict')->onUpdate('restrict');
             $table->foreignIdFor(Publisher::class, 'publisherId')->constrained('publishers')->onDelete('restrict')->onUpdate('restrict');
             $table->timestamp('createdAt')->nullable();
             $table->timestamp('updatedAt')->nullable();

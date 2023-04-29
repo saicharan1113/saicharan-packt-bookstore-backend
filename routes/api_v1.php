@@ -21,4 +21,4 @@ Route::get('/book/getBookList', [BookController::class, 'getBookList']);
 Route::post('/auth/register', [UserController::class, 'register']);
 Route::post('/auth/login', [UserController::class, 'login']);
 Route::get('/search', [SearchController::class, 'search']);
-
+Route::post('/upload-media', [BookController::class, 'upload']);

@@ -36,7 +36,6 @@ class BookFactory extends Factory
             'genreId' => Genre::inRandomOrder()->first(),
             'authorId' => User::where('role', 'AUTHOR')->first(),
             'publisherId' => Publisher::inRandomOrder()->first(),
-            'image' => $this->faker->imageUrl(),
             'isbn' => $this->faker->isbn13(),
             'description' => $this->faker->realText
         ];
