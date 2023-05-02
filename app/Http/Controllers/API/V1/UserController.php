@@ -60,7 +60,7 @@ class UserController extends Controller
                 'password' => ['required']
             ],
             [
-                'email.exists' => 'Incorrect email or password'
+                'email.exists' => 'Incorrect email'
             ]
         );
 
