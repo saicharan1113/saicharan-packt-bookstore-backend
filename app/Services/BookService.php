@@ -62,7 +62,8 @@ class BookService extends ElasticsearchService
                 'publishedOn' => $book->createdAt,
                 'publisher' => $publisher->name,
                 'uniquePublisherId' => $publisher->uniquePublisherId,
-                'uniqueBookId' => $data['bookIdentifier'] ?? $data['uniqueBookId']
+                'uniqueBookId' => $data['bookIdentifier'] ?? $data['uniqueBookId'],
+                'uniqueMediaId' => $data['mediaIdentifier']
             ];
 
             if (array_key_exists('bookIdentifier', $data)) {

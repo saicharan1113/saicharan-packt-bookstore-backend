@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\BookRequest;
 use App\Http\Resources\BookResource;
 use App\Models\Book;
+use App\Models\Media;
 use App\Services\BookService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -104,5 +105,16 @@ class BookController extends Controller
         $mediaData = $bookService->uploadMedia($validatedData);
 
         return new JsonResponse(['response' => $mediaData], Response::HTTP_CREATED);
+    }
+
+    /**
+     * @param Media $media
+     * @return JsonResponse
+     */
+    public function getMedia(Media $media): JsonResponse
+    {
+        $mediaData = $media ? Storage::temporaryUrl($media->path, now()->addMinute(10)) : null;
+
+        return new JsonResponse(['response' => $mediaData], Response::HTTP_OK);
     }
 }
