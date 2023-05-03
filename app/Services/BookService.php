@@ -33,6 +33,7 @@ class BookService extends ElasticsearchService
             }
 
             $publisher = Publisher::where('uniquePublisherId', $data['publisherIdentifier'])->first();
+            $media = Media::where('uniqueMediaId', $data['mediaIdentifier'])->first();
             $genre = Genre::where('uniqueGenreId', $data['genreIdentifier'])->first();
             $user = User::where('uniqueUserId', $data['authorIdentifier'])->first();
             $book->title = $data['title'];
@@ -41,6 +42,7 @@ class BookService extends ElasticsearchService
             $book->publisherId = $publisher->id;
             $book->isbn = $data['isbn'];
             $book->description = $data['description'];
+            $book->mediaId =$media->id;
 
             $book->save();
             $result['message'] = $message;

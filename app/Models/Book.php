@@ -50,6 +50,14 @@ class Book extends BaseModel
     }
 
     /**
+     * @return BelongsTo
+     */
+    public function media(): BelongsTo
+    {
+        return $this->belongsTo(Media::class, 'mediaId');
+    }
+
+    /**
      * @return string
      */
    final public function getRouteKeyName(): string

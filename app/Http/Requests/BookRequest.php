@@ -40,6 +40,7 @@ class BookRequest extends FormRequest
             ],
             'description' => ['required', 'string'],
             'isbn' => ['required', new ValidateISBNRule],
+            'mediaIdentifier' => ['required', 'exists:media,uniqueMediaId']
         ];
 
         if ($this->method() == 'PUT') {

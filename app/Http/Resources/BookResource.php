@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 class BookResource extends JsonResource
 {
@@ -20,7 +21,7 @@ class BookResource extends JsonResource
             'title'             => $this->title,
             'description'       => $this->description,
             'isbn'              => $this->isbn,
-            'image'             => $this->image,
+            'image'             => $this->media ? Storage::temporaryUrl($this->media->path, now()->addMinute(10)) : null,
             'genre'             => $this->genre->name,
             'uniqueGenreId'     => $this->genre->uniqueGenreId,
             'author'            => $this->author->name,
