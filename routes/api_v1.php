@@ -23,3 +23,6 @@ Route::post('/auth/login', [UserController::class, 'login']);
 Route::get('/search', [SearchController::class, 'search']);
 Route::post('/upload-media', [BookController::class, 'upload']);
 Route::get('/get-media/{media}', [BookController::class, 'getMedia']);
+Route::get('/filter', [BookController::class, 'filter']);
+Route::get('/author', [BookController::class, 'getAuthor']);
+Route::get('/genre', [BookController::class, 'getGenre']);

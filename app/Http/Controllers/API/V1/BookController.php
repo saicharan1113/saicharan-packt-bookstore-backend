@@ -6,8 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\BookRequest;
 use App\Http\Resources\BookResource;
 use App\Models\Book;
+use App\Models\Genre;
 use App\Models\Media;
+use App\Models\User;
 use App\Services\BookService;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -83,11 +86,24 @@ class BookController extends Controller
     /**
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function getBookList(BookService $bookService)
+    public function getBookList(Request $request,BookService $bookService)
     {
+       $validatedData = $request->validate(
+           [
+               'author' => ['nullable', 'array'],
+               'isbn'   => ['nullable', 'array'],
+               'title'  => ['nullable', 'array'],
+               'publicationDate' => ['nullable', 'array'],
+               'genre' => ['nullable', 'array']
+           ]
+       );
+
+//       return $bookService->getAll();
+
+
         return BookResource::collection(Book::paginate());
     }
-
+//
     /**
      * @param Request $request
      * @param BookService $bookService
@@ -116,5 +132,36 @@ class BookController extends Controller
         $mediaData = $media ? Storage::temporaryUrl($media->path, now()->addMinute(10)) : null;
 
         return new JsonResponse(['response' => $mediaData], Response::HTTP_OK);
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getAuthor(): Collection
+    {
+        return User::select(['name', 'uniqueUserId'])->where('role', User::ROLES['author'])->get();
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getGenre(): Collection
+    {
+        return Genre::select(['name','uniqueGenreId'])->get();
+    }
+
+    /**
+     * @return JsonResponse
+     */
+    public function filter(): JsonResponse
+    {
+        $filters = [
+            'Authors',
+            'Genre',
+            'Publisher'
+        ];
+
+
+        return new JsonResponse(['response' => $filters], Response::HTTP_OK);
     }
 }

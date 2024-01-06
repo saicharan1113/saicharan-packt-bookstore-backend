@@ -91,4 +91,31 @@ class ElasticsearchService
 
         return $this->client->delete($params)->asArray();
     }
+
+    public function getAll()
+    {
+        $params['index']='books';
+//        $params['body']['query']['query_string']['query']='*com*';
+//        $params['body']['query']['multi_match']['query']='comedy dan avon 044';
+
+        return $this->client->search($params)->asArray()['hits']['hits'];
+        //        $params['body']['query']['multi_match']['query']='harper';
+        // return $this->client->search($params)->withHeader('Content-Type', 'application/json') // can also be used
+    }
+
+    public function paginateResult()
+    {
+
+    }
+
+    public function multiSearch(array $data)
+    {
+
+        $params['index'] = 'books';
+        $params['query']['multi_match']['query'] = $data['search'];
+//        $params['query']['multi_match']['fields'] = ['*'];
+
+        return $this->client->search($params)->asArray()['hits']['hits'];
+
+    }
 }
